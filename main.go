@@ -2,13 +2,32 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
+type loggingRoundTripper struct {
+	logger io.Writer
+	next   http.RoundTripper
+}
+
+func (l loggingRoundTripper) RoundTripper(r *http.Request) (*http.Response, error) {
+	fmt.Fprintf(l.logger, "%s", time.Now().Format(time.DateTime))
+	return l.next.RoundTrip(r)
+}
+
 func main() {
-	resp, err := http.DefaultClient.Get("https://www.uxpin.com/studio/blog/reactjs-websites-examples/")
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			fmt.Println("Redirect")
+			return nil
+		},
+	}
+
+	resp, err := client.Get("http://github.com/bohexists")
 	if err != nil {
 		log.Fatal(err)
 	}
