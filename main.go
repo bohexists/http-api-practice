@@ -1,6 +1,31 @@
 package main
 
-import "http-api-practice/coincap"
+import (
+	"fmt"
+	"github.com/bohexists/http-api-practice/coincap"
+	"log"
+	"time"
+)
+
 func main() {
-	coincapClient ;= coincap.NewClient
+	coincapClient, err := coincap.NewClient(time.Second * 10)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//assets, err := coincapClient.GetAssets()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//for _, asset := range assets {
+	//	fmt.Println(asset.Info())
+	//}
+
+	bitcoin, err := coincapClient.GetAsset("bitcoin")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(bitcoin.Info())
 }
