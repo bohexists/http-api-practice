@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/bohexists/http-api-practice/coincap"
 	"log"
 	"time"
+
+	"github.com/bohexists/http-api-practice/coincap"
 )
 
 func main() {
