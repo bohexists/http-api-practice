@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -22,7 +23,7 @@ func main() {
 	//	log.Fatal(err)
 	//}
 
-	http.HandleFunc("/users", loggingMiddleware(handleUsers))
+	http.HandleFunc("/users", authMiddleware(loggingMiddleware(handleUsers)))
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
@@ -58,8 +59,29 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 
 func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		idFromCtx := r.Context().Value("id")
+		userID, ok := idFromCtx.(string)
+		if !ok {
+			log.Printf("Failed to get user ID from context")
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		log.Printf("Request: %s %s by user %s", r.Method, r.URL.Path, userID)
+		next(w, r)
+	}
+
+}
+
+func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Здесь можно добавить логику логирования, например:
-		log.Printf("Request: %s %s", r.Method, r.URL.Path)
+		userID := r.Header.Get("x-id")
+		if userID == "" {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, "id", userID)
+		r = r.WithContext(ctx)
 		next(w, r)
 	}
 
