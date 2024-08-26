@@ -22,7 +22,7 @@ func main() {
 	//	log.Fatal(err)
 	//}
 
-	http.HandleFunc("/users", handleUsers)
+	http.HandleFunc("/users", loggingMiddleware(handleUsers))
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
@@ -54,6 +54,18 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	}
+}
+
+func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Здесь можно добавить логику логирования, например:
+		log.Printf("Request: %s %s", r.Method, r.URL.Path)
+		next(w, r)
+	}
+
+}
+
+func loggerMiddleware(next interface{}) {
 
 }
 
