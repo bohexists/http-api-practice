@@ -1,16 +1,28 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
-	"time"
+	"net/http"
+)
 
-	"github.com/bohexists/http-api-practice/coincap"
+type User struct {
+	ID   int    `json:"id"`
+	Name string `json:"name,omitempty"`
+}
+
+var (
+	users = []User{{1, "Vasya"}, {2, "Petya"}}
 )
 
 func main() {
-	coincapClient, err := coincap.NewClient(time.Second * 10)
-	if err != nil {
+	//coincapClient, err := coincap.NewClient(time.Second * 10)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	http.HandleFunc("/user", handleUsers)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 
@@ -23,10 +35,20 @@ func main() {
 	//	fmt.Println(asset.Info())
 	//}
 
-	bitcoin, err := coincapClient.GetAsset("bitcoin")
-	if err != nil {
-		log.Fatal(err)
-	}
+	//bitcoin, err := coincapClient.GetAsset("bitcoin")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//fmt.Println(bitcoin.Info())
 
-	fmt.Println(bitcoin.Info())
+}
+
+func handleUsers(w http.ResponseWriter, r *http.Request) {
+	resp, err := json.Marshal(users)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		w.Write(resp)
+	}
 }
