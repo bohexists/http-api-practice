@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -21,7 +22,7 @@ func main() {
 	//	log.Fatal(err)
 	//}
 
-	http.HandleFunc("/user", handleUsers)
+	http.HandleFunc("/users", handleUsers)
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
@@ -45,10 +46,40 @@ func main() {
 }
 
 func handleUsers(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		getUsers(w, r)
+	case http.MethodPost:
+		addUsers(w, r)
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+	}
+
+}
+
+func getUsers(w http.ResponseWriter, r *http.Request) {
 	resp, err := json.Marshal(users)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-
-		w.Write(resp)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(resp)
+}
+
+func addUsers(w http.ResponseWriter, r *http.Request) {
+	reqBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	var user User
+	if err = json.Unmarshal(reqBytes, &user); err != nil {
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	}
+
+	users = append(users, user)
 }
