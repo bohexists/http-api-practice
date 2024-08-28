@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bohexists/http-api-practice/client/coincap"
+	"github.com/bohexists/http-api-practice/client/ipstack"
 	"github.com/bohexists/http-api-practice/server"
 	"log"
 	"time"
@@ -21,25 +21,40 @@ func main() {
 
 	go server.StartServer()
 
-	coincapClient, err := coincap.NewClient(time.Second * 10)
+	//Coincap
+	//coincapClient, err := coincap.NewClient(time.Second * 10)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	//IPstack
+	ipstackClient, err := ipstack.NewClient("aeccdd0513bae8c553250e5761328461", time.Second*10)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	assets, err := coincapClient.GetAssets()
+	//Coincap
+	//assets, err := coincapClient.GetAssets()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//for _, asset := range assets {
+	//	fmt.Println(asset.Info())
+	//}
+
+	//bitcoin, err := coincapClient.GetAsset("bitcoin")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+
+	// IPstack
+	ipInfo, err := ipstackClient.GetIPInfo("134.201.250.155")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, asset := range assets {
-		fmt.Println(asset.Info())
-	}
+	fmt.Printf("IP: %s\nCountry: %s\nCity: %s\n", ipInfo.IP, ipInfo.CountryName, ipInfo.City)
 
-	bitcoin, err := coincapClient.GetAsset("bitcoin")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(bitcoin.Info())
-
+	//fmt.Println(bitcoin.Info())
 }
