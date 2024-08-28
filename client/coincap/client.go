@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/bohexists/http-api-practice/client"
 )
 
 type Client struct {
@@ -23,9 +25,9 @@ func NewClient(timeout time.Duration) (*Client, error) {
 	return &Client{
 		client: &http.Client{
 			Timeout: timeout,
-			Transport: &loggingRoundTripper{
-				logger: os.Stdout,
-				next:   http.DefaultTransport,
+			Transport: &client.LoggingRoundTripper{
+				Logger: os.Stdout,
+				Next:   http.DefaultTransport,
 			},
 		},
 	}, nil

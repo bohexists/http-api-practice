@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bohexists/http-api-practice/coincap"
+	"github.com/bohexists/http-api-practice/client/coincap"
 	"github.com/bohexists/http-api-practice/server"
 	"log"
 	"time"
