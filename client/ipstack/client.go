@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/bohexists/http-api-practice/client"
+	"github.com/bohexists/http-api-practice/client/middleware"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -28,7 +28,7 @@ func NewClient(apiKey string, timeout time.Duration) (*Client, error) {
 	return &Client{
 		client: &http.Client{
 			Timeout: timeout,
-			Transport: &client.LoggingRoundTripper{
+			Transport: &middleware.LoggingRoundTripper{
 				Logger: os.Stdout,
 				Next:   http.DefaultTransport,
 			},

@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bohexists/http-api-practice/client/middleware"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/bohexists/http-api-practice/client"
 )
 
 // Client is a structure that holds an HTTP client for making requests to the CoinCap API.
@@ -28,7 +27,7 @@ func NewClient(timeout time.Duration) (*Client, error) {
 	return &Client{
 		client: &http.Client{
 			Timeout: timeout,
-			Transport: &client.LoggingRoundTripper{
+			Transport: &middleware.LoggingRoundTripper{
 				Logger: os.Stdout,
 				Next:   http.DefaultTransport,
 			},
