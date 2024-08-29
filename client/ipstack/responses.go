@@ -1,5 +1,6 @@
 package ipstack
 
+// IPInfo represents the detailed information about an IP address returned by the ipstack API.
 type IPInfo struct {
 	IP            string     `json:"ip"`
 	Type          string     `json:"type"`
@@ -18,6 +19,7 @@ type IPInfo struct {
 	Connection    Connection `json:"connection"`
 }
 
+// TimeZone represents the time zone details for the location.
 type TimeZone struct {
 	ID               string `json:"id"`
 	CurrentTime      string `json:"current_time"`
@@ -26,6 +28,7 @@ type TimeZone struct {
 	IsDaylightSaving bool   `json:"is_daylight_saving"`
 }
 
+// Currency represents the currency details for the location.
 type Currency struct {
 	Code         string `json:"code"`
 	Name         string `json:"name"`
@@ -33,6 +36,7 @@ type Currency struct {
 	SymbolNative string `json:"symbol_native"`
 }
 
+// Connection represents the connection details of the ISP for the IP address.
 type Connection struct {
 	ASN int    `json:"asn"`
 	ISP string `json:"isp"`

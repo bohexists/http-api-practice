@@ -13,10 +13,13 @@ import (
 	"github.com/bohexists/http-api-practice/client"
 )
 
+// Client is a structure that holds an HTTP client for making requests to the CoinCap API.
 type Client struct {
 	client *http.Client
 }
 
+// NewClient creates a new CoinCap API client with a specified timeout.
+// If the timeout is 0, an error is returned.
 func NewClient(timeout time.Duration) (*Client, error) {
 	if timeout == 0 {
 		return nil, errors.New("timeout 0")
@@ -33,6 +36,7 @@ func NewClient(timeout time.Duration) (*Client, error) {
 	}, nil
 }
 
+// GetAssets retrieves a list of all assets from the CoinCap API.
 func (c Client) GetAssets() ([]Asset, error) {
 	resp, err := c.client.Get("https://api.coincap.io/v2/assets")
 	if err != nil {
@@ -54,6 +58,7 @@ func (c Client) GetAssets() ([]Asset, error) {
 	return r.Assets, nil
 }
 
+// GetAsset retrieves information about a specific asset from the CoinCap API.
 func (c Client) GetAsset(name string) (Asset, error) {
 	url := fmt.Sprintf("https://api.coincap.io/v2/assets/%s", name)
 	resp, err := c.client.Get(url)
